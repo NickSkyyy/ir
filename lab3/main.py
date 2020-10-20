@@ -319,9 +319,14 @@ class BoolRetrieval:
                 if not isSorted and len(result) == num:
                     result.sort(key=itemgetter(1, 0))
                     isSorted = True
-                length = self.edit_length(word, item)
-                if [item, length] in result:
+                isExist = False
+                for elem in result:
+                    if item == elem[0]:
+                        isExist = True
+                        break
+                if isExist:
                     continue
+                length = self.edit_length(word, item)
                 if not isSorted :
                     result.append([item, length])
                 else:
