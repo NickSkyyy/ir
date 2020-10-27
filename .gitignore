@@ -1,6 +1,16 @@
-.vscode
-pic
+# * sample
 *.ipynb
 *.rar
-rar
+*_dir
+
+# pycache
+__pycache__
+
+# others
+.vscode
 index.npz
+pa1-data
+pic
+rar
+test.py
+tmp
