@@ -3,7 +3,20 @@ import array
 class CompressedPostings:
     #If you need any extra helper methods you can add them here 
     ### Begin your code
-
+    def getBin(self, num):
+        if num == 0:
+            return ['10000000']
+        result = []
+        isEnd = True
+        while not num == 0:
+            ans = num % (1 << 7)
+            if isEnd:
+                result.append('1{:07b}'.format(ans))
+                isEnd = False
+            else:
+                result.insert(0, '{:08b}'.format(ans))
+            num = num >> 7
+        return result
     ### End your code
     
     @staticmethod
@@ -23,7 +36,18 @@ class CompressedPostings:
             (as produced by `array.tobytes` function)
         """
         ### Begin your code
-
+        if postings_list == []:
+            return array.array('B', []).tobytes()
+        result = []
+        pre = postings_list[0]
+        for item in CompressedPostings().getBin(pre):
+            result.append(int(item, 2))
+        for i in range(1, len(postings_list)):
+            p = postings_list[i] - pre
+            for item in CompressedPostings().getBin(p):
+                result.append(int(item, 2))
+            pre = pre + p
+        return array.array('B', result).tobytes()
         ### End your code
 
         
@@ -42,7 +66,20 @@ class CompressedPostings:
             Decoded postings list (each posting is a docIds)
         """
         ### Begin your code
-
+        decoded_postings_list = array.array('B')
+        decoded_postings_list.frombytes(encoded_postings_list)
+        #print(decoded_postings_list.tolist())
+        result = []
+        temp = 0
+        for i in range(0, len(decoded_postings_list)):
+            mark = decoded_postings_list[i] >> 7
+            temp = (temp << 7) + decoded_postings_list[i] % (1 << 7)
+            if mark == 1:
+                result.append(temp)
+                temp = 0 
+        for i in range(1, len(result)):
+            result[i] = result[i - 1] + result[i]             
+        return result
         ### End your code
 
 class IdMap:
@@ -67,7 +104,7 @@ class IdMap:
         """
         ### Begin your code
         ans = self.str_to_id.get(s)
-        # print(ans)
+        #print(ans)
         if ans == None:
             p = self.__len__()
             self.id_to_str.append(s)
@@ -123,4 +160,5 @@ class UncompressedPostings:
         
         decoded_postings_list = array.array('L')
         decoded_postings_list.frombytes(encoded_postings_list)
+        #print(decoded_postings_list.tolist())
         return decoded_postings_list.tolist()

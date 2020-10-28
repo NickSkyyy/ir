@@ -1,7 +1,7 @@
 # * sample
 *.ipynb
 *.rar
-*_dir
+*output*
 
 # pycache
 __pycache__
