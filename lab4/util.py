@@ -1,5 +1,50 @@
 import array
 
+class CompressedPostings:
+    #If you need any extra helper methods you can add them here 
+    ### Begin your code
+
+    ### End your code
+    
+    @staticmethod
+    def encode(postings_list):
+        """Encodes `postings_list` using gap encoding with variable byte 
+        encoding for each gap
+        
+        Parameters
+        ----------
+        postings_list: List[int]
+            The postings list to be encoded
+        
+        Returns
+        -------
+        bytes: 
+            Bytes reprsentation of the compressed postings list 
+            (as produced by `array.tobytes` function)
+        """
+        ### Begin your code
+
+        ### End your code
+
+        
+    @staticmethod
+    def decode(encoded_postings_list):
+        """Decodes a byte representation of compressed postings list
+        
+        Parameters
+        ----------
+        encoded_postings_list: bytes
+            Bytes representation as produced by `CompressedPostings.encode` 
+            
+        Returns
+        -------
+        List[int]
+            Decoded postings list (each posting is a docIds)
+        """
+        ### Begin your code
+
+        ### End your code
+
 class IdMap:
     """Helper class to store a mapping from strings to ids."""
     def __init__(self):
