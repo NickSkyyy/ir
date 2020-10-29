@@ -82,6 +82,91 @@ class CompressedPostings:
         return result
         ### End your code
 
+class ECCompressedPostings:
+    #If you need any extra helper methods you can add them here 
+    ### Begin your code
+    def getGama(self, num):
+        num = num + 1
+        if num == 1:
+            return '0'
+        offset = bin(num)[3:]   
+        result = ""
+        for i in range(0, len(offset)):
+            result = result + '1'   
+        return result + '0' + offset
+    ### End your code
+    
+    @staticmethod
+    def encode(postings_list):
+        """Encodes `postings_list` 
+        
+        Parameters
+        ----------
+        postings_list: List[int]
+            The postings list to be encoded
+        
+        Returns
+        -------
+        bytes: 
+            Bytes reprsentation of the compressed postings list 
+        """
+        ### Begin your code
+        if postings_list == []:
+            return array.array('B', []).tobytes()
+        pre = postings_list[0]
+        temp = ECCompressedPostings().getGama(pre)
+        for i in range(1, len(postings_list)):
+            p = postings_list[i] - pre
+            temp = temp + ECCompressedPostings().getGama(p)
+            pre = pre + p
+        l = (len(temp) // 8 + 1) * 8 - len(temp)
+        for i in range(0, l):
+            temp = temp + '1'
+        #print(temp)
+        result = []
+        for i in range(0, len(temp), 8):
+            result.append(int(temp[i : i + 8], 2))
+        return array.array('B', result).tobytes()
+        ### End your code
+
+        
+    @staticmethod
+    def decode(encoded_postings_list):
+        """Decodes a byte representation of compressed postings list
+        
+        Parameters
+        ----------
+        encoded_postings_list: bytes
+            Bytes representation as produced by `CompressedPostings.encode` 
+            
+        Returns
+        -------
+        List[int]
+            Decoded postings list (each posting is a docId)
+        """
+        ### Begin your code
+        decoded_postings_list = array.array('B')
+        decoded_postings_list.frombytes(encoded_postings_list)
+        #print(decoded_postings_list.tolist())
+        result = []
+        temp = ""
+        for p in decoded_postings_list:
+            temp = temp + '{:08b}'.format(p)
+        p = 0
+        num = 0
+        while p < len(temp):
+            if temp[p] == '1':
+                num = num + 1
+            else:
+                result.append(int('1' + temp[p + 1 : p + num + 1], 2) - 1)
+                p = p + num
+                num = 0   
+            p = p + 1
+        for i in range(1, len(result)):
+            result[i] = result[i - 1] + result[i]
+        return result
+        ### End your code
+
 class IdMap:
     """Helper class to store a mapping from strings to ids."""
     def __init__(self):

@@ -11,6 +11,7 @@ import zipfile
 
 data_dir = 'pa1-data'
 data_out = 'output_dir'
+data_gamaout = 'output_gamadir'
 data_vbout = 'output_vbdir'
 data_url = 'http://web.stanford.edu/class/cs276/pa/pa1-data.zip'
 testIdMap = util.IdMap()
@@ -18,7 +19,8 @@ toy_dir = 'toy-data'
 toy_out = 'toy_output_dir'
 
 bisi = BSBIIndex.BSBIIndex(data_dir=data_dir, output_dir=data_out, index_name='data')
-bisi_vb = BSBIIndex.BSBIIndex(data_dir=data_dir, output_dir=data_vbout, index_name='vb', postings_encoding=util.CompressedPostings)
+bisi_vb = BSBIIndex.BSBIIndex(data_dir=data_dir, output_dir=data_vbout, index_name='data', postings_encoding=util.CompressedPostings)
+bisi_gama = BSBIIndex.BSBIIndex(data_dir=data_dir, output_dir=data_gamaout, index_name='data', postings_encoding=util.ECCompressedPostings)
 
 def download():
     urllib.request.urlretrieve(data_url, data_dir+'.zip')
@@ -48,6 +50,11 @@ def init():
         os.mkdir('output_vbdir')
     except FileExistsError:
         print("VB索引已存在")
+    try:
+        # gama压缩索引
+        os.mkdir('output_gamadir')
+    except FileExistsError:
+        print("gama索引已存在")
     try: 
         # 测试文件索引
         os.mkdir('toy_output_dir')
@@ -62,10 +69,14 @@ def init():
         print("创建索引...（整个过程可能需要 15-20 min）")
         bisi.index()
     print("索引（未压缩）创建成功")
-    if not os.path.exists('output_vbdir/vb.index'):
+    if not os.path.exists('output_vbdir/data.index'):
         print("创建VB索引...（整个过程可能需要 15-20 min）")
         bisi_vb.index()
     print("VB索引创建成功")
+    if not os.path.exists('output_gamadir/data.index'):
+        print("创建gama索引...（整个过程可能需要 15-20 min）")
+        bisi_gama.index()
+    print("gama索引创建成功")
 
 if __name__ == "__main__":
     init()
@@ -75,13 +86,15 @@ if __name__ == "__main__":
     #encoding = util.UncompressedPostings.encode([824, 829, 215406])
     #print(encoding)
     #print(util.UncompressedPostings.decode(encoding))
+    #encoding = util.ECCompressedPostings.encode([824, 829, 215406])
+    #print(encoding)
+    #print(util.ECCompressedPostings.decode(encoding))
     while True:
-        query = input("请输入查询内容）：")
+        query = input("请输入查询内容：")
         if query == "0":
             break
-        result = bisi.retrieve(query)
+        result = bisi_gama.retrieve(query, util.ECCompressedPostings)
         if result == []:
             print("查询词不存在，请重新输入")
             continue
         print(result)
-        

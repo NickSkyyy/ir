@@ -167,8 +167,9 @@ class BSBIIndex:
                 tid = self.term_id_map.__getitem__(words[i])
                 did = self.doc_id_map.__getitem__(doc)
                 result.append([tid, did])
-        # print(result)
-        # print(self.term_id_map.__getitem__('you'))
+        #print(result)
+        #print(self.term_id_map.__getitem__('you'))
+        #print(url + " finished")
         return result
         ### End your code
     
@@ -211,14 +212,15 @@ class BSBIIndex:
         return result
         ### End your code
     
-    def retrieve(self, query):
+    def retrieve(self, query, posting_encodings=util.CompressedPostings):
         """Retrieves the documents corresponding to the conjunctive query
         
         Parameters
         ----------
         query: str
             Space separated list of query tokens
-            
+
+
         Result
         ------
         List[str]
@@ -232,7 +234,7 @@ class BSBIIndex:
 
         ### Begin your code
         words = query.split()
-        iim = ii.InvertedIndexMapper('data', directory=self.output_dir)
+        iim = ii.InvertedIndexMapper('data', directory=self.output_dir, postings_encoding=posting_encodings)
         tid = self.term_id_map.__getitem__(words[0])
         ans = iim.__getitem__(tid)
         for i in range(1, len(words)):
