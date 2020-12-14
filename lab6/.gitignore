@@ -1,0 +1,12 @@
+*.mp4
+*hw6*
+
+account
+data_dir
+data_out
+elasticsearch-7.10.1
+logs
+pylucene-8.6.1
+std
+test_dir
+test_out
